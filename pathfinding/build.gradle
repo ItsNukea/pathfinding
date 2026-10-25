@@ -1,8 +1,7 @@
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
 
-group   = projectGroupId
-version = projectVersion
+group   = rootProject.ext.projectGroupId
+version = rootProject.ext.projectVersion
 
 java {
   sourceCompatibility = JavaVersion.VERSION_1_8
@@ -20,74 +19,51 @@ eclipse.project {
   name = base.archivesName.get()
 }
 
-// NOTE: publishing requires you to first set up
-// 1) ~/.gnupg/* with a PGP key to sign the artifacts
-// 2) ~/.gradle/gradle.properties defining
-//
-//    signing.keyId=<YOUR PGP KEY ID>
-//    signing.password=<PASSWORD TO PGP SECRET RING>
-//    signing.secretKeyRingFile=<FULLPATH TO PGP SECRET RING>
-//    ossrhUsername=<Central Portal user token name>
-//    ossrhPassword=<Central Portal user token password>
-
+// JitPack runs `publishToMavenLocal` on this module and serves the result.
+// No signing and no remote repository are needed.
 publishing {
   publications {
     pathfinding(MavenPublication) {
       from components.java
       artifact sourcesJar
-      artifact javadocJar
 
-      groupId    = projectGroupId
+      groupId    = rootProject.ext.projectGroupId
       artifactId = base.archivesName.get()
-      version    = projectVersion
+      version    = rootProject.ext.projectVersion
 
       pom {
         name = 'Path Finding'
         description = 'A generic java path finding library, meant to be used in games'
-        url = 'https://github.com/xaguzman/pathfinding'
+        url = 'https://github.com/ItsNukea/pathfinding'
         packaging = 'jar'
 
         scm {
-          connection = 'scm:git:git://github.com/xaguzman/pathfinding.git'
-          developerConnection = 'scm:git:git@github.com:xaguzman/pathfinding.git'
-          url = 'http://github.com/xaguzman/pathfinding'
+          connection = 'scm:git:git://github.com/ItsNukea/pathfinding.git'
+          developerConnection = 'scm:git:git@github.com:ItsNukea/pathfinding.git'
+          url = 'https://github.com/ItsNukea/pathfinding'
         }
 
         licenses {
           license {
             name = 'The Apache Software License, Version 2.0'
-            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
           }
         }
 
         developers {
           developer {
+            id = 'ItsNukea'
+            name = 'Nukea'
+            url = 'https://github.com/ItsNukea'
+          }
+          developer {
             id = 'xaguzman'
             name = 'Xavier Guzman'
-            email = 'xaguzman@gmail.com'
-            timezone = 'CST  (GMT-6)'
+            url = 'https://github.com/xaguzman'
+            roles = ['original author']
           }
         }
       }
     }
   }
-
-  repositories {
-    maven {
-      name = 'ossrh'
-      url = project.version.toString().endsWith('-SNAPSHOT')
-              ? 'https://central.sonatype.com/repository/maven-snapshots/'
-              : 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
-      credentials {
-        username = findProperty('ossrhUsername')
-        password = findProperty('ossrhPassword')
-      }
-    }
-  }
-}
-
-signing {
-  // only require signing when actually publishing
-  required = providers.provider { gradle.taskGraph.allTasks.any { it.name.startsWith('publish') } }
-  sign publishing.publications.pathfinding
 }

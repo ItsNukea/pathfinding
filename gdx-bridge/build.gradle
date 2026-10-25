@@ -41,13 +41,13 @@ publishing {
         scm {
           connection = 'scm:git:git://github.com/xaguzman/pathfinding.git'
           developerConnection = 'scm:git:git@github.com:xaguzman/pathfinding.git'
-          url = 'http://github.com/xaguzman/pathfinding'
+          url = 'https://github.com/xaguzman/pathfinding'
         }
 
         licenses {
           license {
             name = 'The Apache Software License, Version 2.0'
-            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
           }
         }
 

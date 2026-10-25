@@ -17,28 +17,21 @@ allprojects {
 }
 
 ext {
-  projectVersion = '0.2.6'
-  projectGroupId = 'com.github.nukea'
-  gdxVersion = '1.5.0'
+  projectVersion = '0.2.7'
+  projectGroupId = 'com.github.ItsNukea'
   distDir = file('dist/')
 }
 
 subprojects {
   // Binary Jar
   jar {
-    destinationDirectory.set(distDir)
-  }
-
-  task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier = 'javadoc'
-    from javadoc, sourceSets.main.allSource
-    destinationDirectory.set(distDir)
+    destinationDirectory.set(rootProject.ext.distDir)
   }
 
   task sourcesJar(type: Jar, dependsOn: classes) {
     archiveClassifier = 'sources'
     from sourceSets.main.allSource
-    destinationDirectory.set(distDir)
+    destinationDirectory.set(rootProject.ext.distDir)
   }
 
   layout.buildDirectory = rootProject.layout.buildDirectory
@@ -47,19 +40,6 @@ subprojects {
 project(':pathfinding') {
   dependencies {
     testImplementation 'junit:junit:4.10'
-  }
-}
-
-project(':gdx-bridge') {
-  dependencies {
-    // 'api' needs the java-library plugin; use it if consumers of gdx-bridge need these types
-    implementation project(":pathfinding")
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-
-    testImplementation "junit:junit:4.10"
-    testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
   }
 }
 

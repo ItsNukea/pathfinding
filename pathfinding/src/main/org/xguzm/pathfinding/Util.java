@@ -8,7 +8,7 @@ import java.util.List;
 public class Util {	
 	@SuppressWarnings("unchecked")
 	public static <T extends NavigationNode> List<T> backtrace(T node){
-		List<NavigationNode> path = new ArrayList<NavigationNode>(); 
+		List<NavigationNode> path = new ArrayList<NavigationNode>();
 		path.add(node);
 		T node1 = node;
 		while (node1.getParent() != null && node1 != node1.getParent()){

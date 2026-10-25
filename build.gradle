@@ -1,78 +1,68 @@
-buildscript{
-  repositories{
+buildscript {
+  repositories {
     mavenCentral()
     mavenLocal()
   }
 }
 
-allprojects{
+allprojects {
   apply plugin: 'java'
   apply plugin: 'eclipse'
   apply plugin: 'idea'
 
-  repositories{
+  repositories {
     mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     mavenLocal()
   }
-
-//   /** needed to disable Java 8 doclint which throws errors **/
-//   tasks.withType(Javadoc) {
-//     options.addStringOption('Xdoclint:none', '-quiet')
-//   }
 }
 
 ext {
   projectVersion = '0.2.6'
-  projectGroupId = 'com.github.xaguzman'
+  projectGroupId = 'com.github.nukea'
   gdxVersion = '1.5.0'
-  distDir = file('dist/')   
+  distDir = file('dist/')
 }
 
-
-subprojects{
+subprojects {
   // Binary Jar
   jar {
-    destinationDir      = distDir
+    destinationDirectory.set(distDir)
   }
 
-  task javadocJar(type: Jar, dependsOn:javadoc){
-    classifier = 'javadoc'
+  task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier = 'javadoc'
     from javadoc, sourceSets.main.allSource
-    destinationDir      = distDir
+    destinationDirectory.set(distDir)
   }
 
-  task sourcesJar(type: Jar, dependsOn:classes){
-    classifier = 'sources'
+  task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
     from sourceSets.main.allSource
-    destinationDir      = distDir
+    destinationDirectory.set(distDir)
   }
 
-  buildDir = rootProject.buildDir
+  layout.buildDirectory = rootProject.layout.buildDirectory
 }
 
-project(':pathfinding'){
-  
+project(':pathfinding') {
   dependencies {
-    testCompile 'junit:junit:4.10'
+    testImplementation 'junit:junit:4.10'
   }
 }
 
-project(':gdx-bridge'){
-  
+project(':gdx-bridge') {
   dependencies {
-    compile project(":pathfinding")
-   	compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    // 'api' needs the java-library plugin; use it if consumers of gdx-bridge need these types
+    implementation project(":pathfinding")
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 
-    testCompile "junit:junit:4.10"
-    testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
-    testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    testCompile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    testImplementation "junit:junit:4.10"
+    testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
   }
 }
 
 tasks.eclipse.doLast {
-    delete ".project"
+  delete ".project"
 }
-
